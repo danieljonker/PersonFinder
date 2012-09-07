@@ -1,0 +1,23 @@
+<resources>
+
+    <string name="app_name">Person Finder</string>
+    <string name="title_section1">Main Menu</string>
+    <string name="title_section2">Camera</string>
+    <string name="title_section3">Database</string>
+    <string name="title_section4">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main_menu">MainMenu</string>
+
+    <color name="mainmenubackground">#7cfc00</color>
+
+    <string name="btnlblCamera">Camera</string>
+    <string name="btnlblDatabase">Database</string>
+    <string name="btnlblSettings">Settings</string>
+
+    <color name="mainmenubtnbackground">#eecbad</color>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_camera">CameraActivity</string>
+
+</resources>
