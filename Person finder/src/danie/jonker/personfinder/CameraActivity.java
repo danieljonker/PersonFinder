@@ -1,5 +1,6 @@
 package danie.jonker.personfinder;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 public class CameraActivity extends Activity {
 
@@ -19,6 +21,7 @@ public class CameraActivity extends Activity {
     OrientationEventListener myOrientationEventListener;
 	
 
+	@SuppressLint("ParserError")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,10 +32,6 @@ public class CameraActivity extends Activity {
         
         mCamera.setFaceDetectionListener(new MyFaceDetectionListener());
 
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
         
         
         View onTop = (View) findViewById(R.id.rectangle_overlay);
@@ -40,9 +39,18 @@ public class CameraActivity extends Activity {
         
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
-        canvas.drawRect(30, 30, 80, 80, paint);
+        canvas.drawRect(152, 48, -282, 22, paint);
         
         onTop.draw(canvas);
+        
+        
+        
+     // Create our Preview view and set it as the content of our activity.
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        
+        
+        preview.addView(mPreview);
         
     }
     

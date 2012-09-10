@@ -1,6 +1,5 @@
 package danie.jonker.personfinder;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,13 +12,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
 import android.media.FaceDetector;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -28,7 +25,8 @@ import android.view.SurfaceView;
 /** A basic Camera preview class */
 
 
-@SuppressLint("ParserError")
+
+@SuppressLint({ "ParserError", "ParserError", "ParserError", "ParserError" })
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
     private static final String TAG = "CameraPreview";
 	private static final int NUM_FACES = 5;
@@ -127,22 +125,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Log.i("preview size: ", String.valueOf(width) + "x" + String.valueOf(height));
         int[] mIntArray = new int[width*height];
         
-        /*// Convert to JPG
-        Size previewSize = parameters.getPreviewSize(); 
-        YuvImage yuvimage=new YuvImage(data, ImageFormat.NV21, previewSize.width, previewSize.height, null);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        yuvimage.compressToJpeg(new Rect(0, 0, previewSize.width, previewSize.height), 100, baos);
-        byte[] jdata = baos.toByteArray();
-
-        // Convert to Bitmap
-        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length);
-        */
         
         // Decode Yuv data to integer array
         decodeYUV420SP(mIntArray, data, width, height);
 
-        BitmapFactory.Options BitmapFactoryOptionsbfo = new BitmapFactory.Options();
-        BitmapFactoryOptionsbfo.inPreferredConfig = Bitmap.Config.RGB_565; 
+        
         //Initialize the bitmap, with the replaced color  
         //Bitmap bmp = Bitmap.createBitmap(mIntArray, width, height, Bitmap.Config.ARGB_8888); 
         
@@ -150,7 +137,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         //saveImage(bmp);
         
         Collection<Rect> faceRects = findFaces(bmp);
-        faceRects.toString();
+        
+        if (faceRects.size() > 0){
+        	for (Rect r : faceRects){
+        		
+        		saveFace(bmp, r);
+        	}
+        }
+        Log.i(TAG, faceRects.toString());
         //Collection<Rect> faceRects = FaceDetection.findfaces(bmp);
         //Rect r = FaceDetection.findFace(bmp);
         
@@ -213,7 +207,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	/**
 	 * This method is to find the faces
 	 */
-	@SuppressLint("ParserError")
 	public ArrayList<Rect> findFaces(Bitmap bmp){
 		ArrayList<Rect> rects = new ArrayList<Rect>();
 		
@@ -257,6 +250,34 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		}
 		return rects;
 	}
+	
+	private void saveFace(Bitmap bmp, Rect r){
+		File myDir=new File("/sdcard/saved_images");
+		  myDir.mkdirs();
+		  Random generator = new Random();
+		  int n = 10000;
+		  n = generator.nextInt(n);
+		  String fname = "Image-"+ n +".jpg";
+		  File file = new File (myDir, fname);
+		  if (file.exists ()) file.delete (); 
+		  try {
+			  
+			  Bitmap newBmp = bmp.copy(bmp.getConfig(), true);
+			  Canvas canvas = new Canvas(newBmp);
+			   this.setDrawingCacheEnabled(true);
+			   Log.i(TAG, r.toString());
+			   canvas.drawBitmap(newBmp, r, r, null);
+			   
+			   FileOutputStream out = new FileOutputStream(file);
+			   Bitmap bitmap = this.getDrawingCache();
+		       bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+		       out.flush();
+		       out.close();
+
+		   } catch (Exception e) {
+		       e.printStackTrace();
+		  }
+	}
 
 	
 	private void saveImage(Bitmap bmp) {
@@ -270,6 +291,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		  File file = new File (myDir, fname);
 		  if (file.exists ()) file.delete (); 
 		  try {
+			
 		       FileOutputStream   out = new FileOutputStream(file);
 		       bmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
 		       out.flush();

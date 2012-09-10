@@ -24,7 +24,6 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int FrameLayout1=0x7f090000;
         public static final int Space1=0x7f090005;
         public static final int Space2=0x7f090007;
         public static final int Space3=0x7f090006;
@@ -33,6 +32,7 @@ public final class R {
         public static final int btnSettings=0x7f09000a;
         public static final int button_capture=0x7f090002;
         public static final int camera_preview=0x7f090001;
+        public static final int camera_preview1=0x7f090000;
         public static final int container=0x7f090004;
         public static final int menu_settings=0x7f09000b;
         public static final int rectangle_overlay=0x7f090003;
