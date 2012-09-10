@@ -1,13 +1,14 @@
 package danie.jonker.personfinder;
 
 import android.app.Activity;
-import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.Camera;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.OrientationEventListener;
+import android.view.View;
 import android.widget.FrameLayout;
 
 public class CameraActivity extends Activity {
@@ -17,7 +18,8 @@ public class CameraActivity extends Activity {
     private CameraPreview mPreview;
     OrientationEventListener myOrientationEventListener;
 	
-    @Override
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
@@ -32,31 +34,18 @@ public class CameraActivity extends Activity {
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
         
-        /*
-         * Check if orientation changes so that we can pause and restart camera
-         */
-        myOrientationEventListener
-        = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL){
-
-         @Override
-         public void onOrientationChanged(int arg0) {
-          // TODO Auto-generated method stub
-        	 Log.i(TAG, "Orientation Changed");
-        	 mCamera.stopPreview();
-        	 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-        		 mCamera.setDisplayOrientation(90);
-        	 } else {
-        		 mCamera.setDisplayOrientation(0);
-        	 }
-        	 mCamera.startPreview();
-
-        	 
-        	 
-        	 
-         }};
-         
-           
+        
+        View onTop = (View) findViewById(R.id.rectangle_overlay);
+        Canvas canvas = new Canvas();
+        
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        canvas.drawRect(30, 30, 80, 80, paint);
+        
+        onTop.draw(canvas);
+        
     }
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -64,8 +53,18 @@ public class CameraActivity extends Activity {
         return true;
     }
     
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	mCamera.stopPreview();
+    }
     
     
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	mCamera.startPreview();
+    }
     
     /** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance(){
@@ -78,6 +77,8 @@ public class CameraActivity extends Activity {
 	    }
 	    return c; // returns null if camera is unavailable
 	}
+	
+	
 	
 
     

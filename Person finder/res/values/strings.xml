@@ -19,5 +19,6 @@
 
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="btn_camera_capture">Capture</string>
 
 </resources>
