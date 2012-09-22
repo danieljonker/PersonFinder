@@ -1,11 +1,19 @@
 package danie.jonker.personfinder;
 
+import static com.googlecode.javacv.cpp.opencv_contrib.createFisherFaceRecognizer;
+import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImage;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
+
+import com.googlecode.javacpp.IntPointer;
+import com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizerPtr;
+import com.googlecode.javacv.cpp.opencv_core.CvArr;
+import com.googlecode.javacv.cpp.opencv_core.MatVector;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -26,13 +34,14 @@ import android.view.SurfaceView;
 
 
 
-@SuppressLint({ "ParserError", "ParserError", "ParserError", "ParserError" })
+@SuppressLint({ "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError", "ParserError" })
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
     private static final String TAG = "CameraPreview";
 	private static final int NUM_FACES = 5;
 	private SurfaceHolder mHolder;
     private Camera mCamera;
     private byte[] mBuffer;
+    private FaceRecognition faceRec = new FaceRecognition();
     
     
     @SuppressWarnings("deprecation")
@@ -207,6 +216,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	/**
 	 * This method is to find the faces
 	 */
+	@SuppressLint("ParserError")
 	public ArrayList<Rect> findFaces(Bitmap bmp){
 		ArrayList<Rect> rects = new ArrayList<Rect>();
 		
@@ -218,7 +228,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		Log.i("Faces Found", String.valueOf(facesFound));
 		
 		if (facesFound > 0) {
-			saveImage(bmp);
+			//saveImage(bmp);
 		
 			for(int i=0; i<facesFound; i++){
 				FaceDetector.Face face = faces[i];
@@ -226,15 +236,21 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 				PointF midEyes = new PointF();
 		        face.getMidPoint( midEyes );
 		        
+		        
 		        float eyedist = face.eyesDistance();
 		        PointF lt = new PointF( midEyes.x - eyedist * 2.0f, midEyes.y - eyedist * 2.5f );
 		        // Create rectangle around face.  Create a box based on the eyes and add some padding.
 		        // The ratio of head height to width is generally 9/5 but that makes the rect a bit to tall.
+		        Log.i("left", "lt.x: " + String.valueOf((int) ( lt.x)));
+		        Log.i("top", "lt.y: " + String.valueOf((int) ( lt.y)));
+		        Log.i("right", "lt.x + eyedist: " + String.valueOf((int) ( lt.x + eyedist * 3.0f )) + "bmp width" + String.valueOf(bmp.getWidth()));
+		        
+		        //These values determine the bounding box and the face image that is taken and given to the recogniser
 		        Rect r = new Rect(
-		            Math.max( (int) ( lt.x ), 0 ),
-		            Math.max( (int) ( lt.y ), 0 ),
-		            Math.min( (int) ( lt.x + eyedist * 4.0f ), bmp.getWidth() ),
-		            Math.min( (int) ( lt.y + eyedist * 5.5f ), bmp.getHeight() )
+		            Math.max( (int) ( lt.x) + 40, 0 ),
+		            Math.max( (int) ( lt.y) + 50, 0 ),
+		            Math.min( (int) ( lt.x + eyedist * 3.0f ), bmp.getWidth() ),
+		            Math.min( (int) ( lt.y + eyedist * 4.2f ), bmp.getHeight() )
 		        );
 		        //adding rectangle to list 
 		        rects.add(r);
@@ -257,22 +273,25 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		  Random generator = new Random();
 		  int n = 10000;
 		  n = generator.nextInt(n);
-		  String fname = "Image-"+ n +".jpg";
+		  String fname = "FaceImage-"+ n +".jpg";
 		  File file = new File (myDir, fname);
 		  if (file.exists ()) file.delete (); 
 		  try {
+			  Bitmap  bitmap = Bitmap.createBitmap(r.width(),r.height(), Bitmap.Config.RGB_565);
+			  Canvas canvas = new Canvas(bitmap);
+			  Bitmap toDisk = bmp.copy(bmp.getConfig(), true);
 			  
-			  Bitmap newBmp = bmp.copy(bmp.getConfig(), true);
-			  Canvas canvas = new Canvas(newBmp);
-			   this.setDrawingCacheEnabled(true);
-			   Log.i(TAG, r.toString());
-			   canvas.drawBitmap(newBmp, r, r, null);
+			  //destination rectangle, please work
+			  Rect dest = new Rect(0,0, 0 + (r.right - r.left), 0 + (r.bottom - r.top));
+			  canvas.drawBitmap(toDisk, r, dest, null);
+			  
 			   
-			   FileOutputStream out = new FileOutputStream(file);
-			   Bitmap bitmap = this.getDrawingCache();
-		       bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-		       out.flush();
-		       out.close();
+			  FileOutputStream out = new FileOutputStream(file);
+			  //Bitmap bitmap = this.getDrawingCache();
+			  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+		      //faceBmp.compress(Bitmap.CompressFormat.JPEG, 90, out);
+		      out.flush();
+		      out.close();
 
 		   } catch (Exception e) {
 		       e.printStackTrace();
@@ -282,7 +301,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	
 	private void saveImage(Bitmap bmp) {
 
-		  File myDir=new File("/sdcard/saved_images");
+		  File myDir=new File("/sdcard/FaceDB");
 		  myDir.mkdirs();
 		  Random generator = new Random();
 		  int n = 10000;
@@ -303,6 +322,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		}
 	
 	
+	/**
+	 * DecodeYUV
+	 * @param rgb
+	 * @param yuv420sp
+	 * @param width
+	 * @param height
+	 */
 	static public void decodeYUV420SP(int[] rgb, byte[] yuv420sp, int width, int height) {
     	final int frameSize = width * height;
     	
@@ -328,6 +354,81 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     			rgb[yp] = 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
     		}
     	}
-    }
+    } //decodeYUV
+	
+	/**
+	 * train facerecogniser
+	 */
+	public void train() {
+		Log.i(TAG, "Starting train method");
+		long startTime = System.nanoTime();
+		
+		
+		MatVector images;
+		CvArr labelsCV;
+
+		//Total number of faces in database
+		final int numberOfImages = 20;
+
+		//top level path of face database directory
+		File faceDir = new File("/sdcard/FaceDB");
+		
+		// Allocate some memory:
+		images = new MatVector(numberOfImages);
+		
+		//CvArr arr = new CvArr(new CvMatArray(images));
+		//array of integer labels
+		//Integer[] labels = new Integer[numberOfImages];
+		ArrayList<Integer> labels = new ArrayList<Integer>();
+		
+		//Make an intPointer - this is the c++ array type, will be filled with labels.
+		IntPointer iPoint = new IntPointer(0,0);
+		
+		int[] labelIntArray = new int[2];
+		labelIntArray[0] = 0;
+		labelIntArray[1] = 0;
+		
+		CvArr image;
+		// Load an image:
+		image = cvLoadImage(faceDir + "/s1/1.pgm");
+		
+		// And put it into the MatVector:
+		images.put(0, image); 
+		// and put the label in
+		labels.add(0);
+		
+		// and repeat
+		image = cvLoadImage(faceDir + "/s1/2.pgm");
+		images.put(1, image);
+		labels.add(0);
+		
+		iPoint.put(labelIntArray);
+		for (Integer i: labels){
+			//iPoint.put(i);
+		}
+		//turn the intPointer into a CvArr  
+		//labelsCV = new CvArr(iPoint);
+		labelsCV = new CvArr(iPoint);
+		// Then get a Pointer to a FaceRecognizer (FaceRecognizerPtr).
+		// Java doesn't have default parameters, so you have to add some yourself,
+		// if you pass 0 as num_components to the EigenFaceRecognizer, the number of
+		// components is determined by the data, for the threshold use the maximum possible
+		// value if you don't want one. I don't know the constant in Java:
+		FaceRecognizerPtr model = createFisherFaceRecognizer(0,1000);
+		// Then train it. See how I call get(), to get the FaceRecognizer inside the FaceRecognizerPtr:
+	    model.get().train(images, labelsCV);
+		
+	    //get endtime and calculate time training process takes
+		long endTime = System.nanoTime();
+		long duration = endTime - startTime;
+		double seconds = (double)duration / 1000000000.0;
+		Log.i(TAG, "Training took: " + String.valueOf(seconds));
+	}
+	
+	
+	public void train(String filepath) {
+		faceRec.learn(filepath);
+	}
+
 
 }

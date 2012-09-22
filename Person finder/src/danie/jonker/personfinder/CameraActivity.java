@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.OrientationEventListener;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 public class CameraActivity extends Activity {
 
@@ -31,8 +31,6 @@ public class CameraActivity extends Activity {
         mCamera = getCameraInstance();
         
         mCamera.setFaceDetectionListener(new MyFaceDetectionListener());
-
-        
         
         View onTop = (View) findViewById(R.id.rectangle_overlay);
         Canvas canvas = new Canvas();
@@ -43,15 +41,20 @@ public class CameraActivity extends Activity {
         
         onTop.draw(canvas);
         
-        
-        
      // Create our Preview view and set it as the content of our activity.
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         
-        
         preview.addView(mPreview);
         
+        
+        final Button button = (Button) findViewById(R.id.button_train);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	mPreview.train("/sdcard/FaceDB/AT&T.txt");
+                // Perform action on click
+            }
+        });
     }
     
 
