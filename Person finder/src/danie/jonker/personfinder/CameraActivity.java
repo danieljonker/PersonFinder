@@ -48,13 +48,7 @@ public class CameraActivity extends Activity {
         preview.addView(mPreview);
         
         
-        final Button button = (Button) findViewById(R.id.button_train);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	mPreview.train("/sdcard/FaceDB/AT&T.txt");
-                // Perform action on click
-            }
-        });
+        
     }
     
 

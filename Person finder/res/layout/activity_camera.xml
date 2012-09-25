@@ -15,13 +15,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_camera_capture" />
-    
-    <Button
-        android:id="@+id/button_train"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="@string/btn_camera_train" />
 
     <View
         android:id="@+id/rectangle_overlay"

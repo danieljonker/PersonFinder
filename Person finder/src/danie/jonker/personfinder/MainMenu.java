@@ -30,6 +30,7 @@ public class MainMenu extends FragmentActivity implements ActionBar.TabListener 
 
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
     private static final String TAG = "Main MEnu";
+    private FaceRecognition faceRec = new FaceRecognition();
     //TextView btnCamera = (TextView) findViewById(R.id.btnCamera); 
     
 
@@ -59,11 +60,20 @@ public class MainMenu extends FragmentActivity implements ActionBar.TabListener 
     			if (checkCameraHardware(getApplicationContext())){
     				Log.i(TAG, "Camera exists, starting camera activity");
     				Intent i = new Intent(getApplicationContext(), CameraActivity.class);
+    				
     				startActivity(i);				
     			} else {
     				//write toast to say no camera hardware
     				Log.i(TAG, "No camera hardware");
     		}
+            }
+        });
+        final Button trainButton = (Button) findViewById(R.id.btnTrain);
+        trainButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	
+            	faceRec.learn("/sdcard/FaceDB/AT&T.txt");
+                // Perform action on click
             }
         });
     }

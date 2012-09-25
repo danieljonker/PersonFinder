@@ -19,7 +19,10 @@ public class FaceRecogniser {
 	private static final String TAG = "Face Recogniser";
 	
 
-	public static void train() {
+	/**
+	 * train facerecogniser
+	 */
+	public void train() {
 		Log.i(TAG, "Starting train method");
 		long startTime = System.nanoTime();
 		
@@ -36,10 +39,13 @@ public class FaceRecogniser {
 		// Allocate some memory:
 		images = new MatVector(numberOfImages);
 		
+		//CvArr arr = new CvArr(new CvMatArray(images));
+		//array of integer labels
+		//Integer[] labels = new Integer[numberOfImages];
 		ArrayList<Integer> labels = new ArrayList<Integer>();
 		
 		//Make an intPointer - this is the c++ array type, will be filled with labels.
-		IntPointer iPoint = new IntPointer();
+		IntPointer iPoint = new IntPointer(0,0);
 		
 		int[] labelIntArray = new int[2];
 		labelIntArray[0] = 0;
@@ -80,8 +86,5 @@ public class FaceRecogniser {
 		long duration = endTime - startTime;
 		double seconds = (double)duration / 1000000000.0;
 		Log.i(TAG, "Training took: " + String.valueOf(seconds));
-		
-
 	}
-
 }
