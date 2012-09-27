@@ -388,18 +388,18 @@ public class FaceRecognition {
 		// truth = personNumTruthMat.data_i().get(i);
 		nearest = trainPersonNumMat.data_i().get(iNearest); // result
 
-		// get endtime and calculate time training process takes
+		// get endtime and calculate time recognition process takes
 		long endTime = System.nanoTime();
 		long duration = endTime - startTime;
 		double seconds = (double) duration / 1000000000.0;
-		Log.i(TAG, "Training took: " + String.valueOf(seconds));
+		Log.i(TAG, "recognition took: " + String.valueOf(seconds));
 
 		Log.i(TAG, "nearest = " + nearest + ". Confidence = " + confidence);
 		//Save the IplImage so we can see what it looks like
 		Random generator = new Random();
 		int n = 10000;
 		n = generator.nextInt(n);
-		String fname = "/sdcard/saved_images/" + nearest + " " + String.valueOf(seconds) + " " + n + ".jpg";
+		String fname = "/sdcard/saved_images/" + nearest + " " + String.valueOf(seconds) + " " + String.valueOf(confidence) + " " + n + ".jpg";
 	
 		Log.i(TAG, "Saving image as: " + fname);
 		
@@ -1007,14 +1007,10 @@ public class FaceRecognition {
 		IplImage image = IplImage.create(width, height, IPL_DEPTH_8U, 4);
 		IplImage _1image = IplImage.create(width, height, IPL_DEPTH_8U, 1);
 		IplImage _3image = IplImage.create(width, height, IPL_DEPTH_8U, 3);
-		IplImage _1_32_image = cvCreateImage(faceImgSize, // size
-				IPL_DEPTH_32F, // depth
-				1); // channels
-		
-		//IPL_DEPTH_32S
+
 		
 		
-		Log.i("TAG", "number of channels: " + String.valueOf(_1_32_image.nChannels()));
+		Log.i("TAG", "number of channels: " + String.valueOf(_1image.nChannels()));
 		Log.i("TAG", "depth: " + String.valueOf(_1image.depth()));
 		Log.i("TAG", "null?: " + String.valueOf(_1image.isNull()));
 		Log.i("TAG", "imageSize: " + String.valueOf(_1image.imageSize()));
@@ -1026,13 +1022,8 @@ public class FaceRecognition {
 		cvCvtColor(image, _3image, CV_BGRA2BGR);
 		cvCvtColor(_3image, _1image, CV_RGB2GRAY);
 		
-		//convert 8-bit 1-channel image to 32-bit 1-channel
-		cvConvertScale(_1image, _1_32_image , 1, 0);
 		
-		cvSaveImage("/sdcard/saved_images/testfaceimage.jpg", image);
 		cvSaveImage("/sdcard/saved_images/testface_1image.jpg", _1image);
-		cvSaveImage("/sdcard/saved_images/testface_3image.jpg", _3image);
-		cvSaveImage("/sdcard/saved_images/testface_1_32_image.jpg", _1image);
 
 		
 

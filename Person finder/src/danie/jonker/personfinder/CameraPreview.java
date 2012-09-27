@@ -129,8 +129,8 @@ public class CameraPreview extends SurfaceView implements
 		Integer width = parameters.getPreviewSize().width;
 		Integer height = parameters.getPreviewSize().height;
 
-		Log.i("preview size: ",
-				String.valueOf(width) + "x" + String.valueOf(height));
+		//Log.i("preview size: ",
+		//		String.valueOf(width) + "x" + String.valueOf(height));
 		int[] mIntArray = new int[width * height];
 
 		// Decode Yuv data to integer array
@@ -147,6 +147,10 @@ public class CameraPreview extends SurfaceView implements
 		Collection<Rect> faceRects = findFaces(bmp);
 
 		if (faceRects.size() > 0) {
+			Log.i(TAG, "+++++++++++++++++++++++++++++++++++++++");
+			Log.i(TAG, "starting recognition process");
+			// Start timing recognition
+			long startTime = System.nanoTime();
 			for (Rect r : faceRects) {
 	
 
@@ -161,8 +165,13 @@ public class CameraPreview extends SurfaceView implements
 				
 
 			}
+			
+			long endTime = System.nanoTime();
+			long duration = endTime - startTime;
+			double seconds = (double) duration / 1000000000.0;
+			Log.i(TAG, "Total Recognition process took: " + String.valueOf(seconds));
 		}
-		Log.i(TAG, faceRects.toString());
+		//Log.i(TAG, faceRects.toString());
 		// Collection<Rect> faceRects = FaceDetection.findfaces(bmp);
 		// Rect r = FaceDetection.findFace(bmp);
 
@@ -233,7 +242,7 @@ public class CameraPreview extends SurfaceView implements
 		// String.valueOf(bmp.getHeight())));
 
 		Integer facesFound = arrayFaces.findFaces(bmp, faces);
-		Log.i("Faces Found", String.valueOf(facesFound));
+		//Log.i("Faces Found", String.valueOf(facesFound));
 
 		if (facesFound > 0) {
 			// saveImage(bmp);
