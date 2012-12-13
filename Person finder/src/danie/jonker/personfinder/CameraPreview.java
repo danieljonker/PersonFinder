@@ -25,11 +25,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 /** A basic Camera preview class */
-
-@SuppressLint({ "ParserError", "ParserError", "ParserError", "ParserError",
-		"ParserError", "ParserError", "ParserError", "ParserError",
-		"ParserError", "ParserError", "ParserError", "ParserError",
-		"ParserError", "ParserError", "ParserError" })
 public class CameraPreview extends SurfaceView implements
 		SurfaceHolder.Callback, Camera.PreviewCallback {
 	private static final String TAG = "CameraPreview";
@@ -99,7 +94,6 @@ public class CameraPreview extends SurfaceView implements
 			mCamera.setPreviewCallback(this);
 			
 			faceRec.callLoadTrainingData();
-
 			// Available picture sizes for samsung nexus: 480x640, 960x1280,
 			// 1200x1600, 1536x2048, 1920x2560
 			// parameters.setPreviewSize(pictureLength, pictureHeight);
@@ -136,13 +130,8 @@ public class CameraPreview extends SurfaceView implements
 		// Decode Yuv data to integer array
 		decodeYUV420SP(mIntArray, data, width, height);
 
-		// Initialize the bitmap, with the replaced color
-		// Bitmap bmp = Bitmap.createBitmap(mIntArray, width, height,
-		// Bitmap.Config.ARGB_8888);
-
 		Bitmap bmp = Bitmap.createBitmap(mIntArray, width, height,
 				Bitmap.Config.RGB_565);
-		// saveImage(bmp);
 
 		Collection<Rect> faceRects = findFaces(bmp);
 
@@ -286,7 +275,6 @@ public class CameraPreview extends SurfaceView implements
 								+ face.pose(FaceDetector.Face.EULER_Z)
 								+ "). Eye Midpoint: (" + midEyes.x + ","
 								+ midEyes.y + ")");
-
 			}
 		}
 		return rects;
@@ -408,7 +396,6 @@ public class CameraPreview extends SurfaceView implements
 		
         Bitmap resizedBmp = Bitmap.createScaledBitmap(bitmap, 92, 112, true);
 
-		
 		return resizedBmp;
 	}
 

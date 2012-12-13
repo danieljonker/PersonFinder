@@ -20,8 +20,6 @@ public class CameraActivity extends Activity {
     private CameraPreview mPreview;
     OrientationEventListener myOrientationEventListener;
 	
-
-	@SuppressLint("ParserError")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +27,6 @@ public class CameraActivity extends Activity {
         
         // Create an instance of Camera
         mCamera = getCameraInstance();
-        
-        mCamera.setFaceDetectionListener(new MyFaceDetectionListener());
         
         View onTop = (View) findViewById(R.id.rectangle_overlay);
         Canvas canvas = new Canvas();
@@ -46,12 +42,8 @@ public class CameraActivity extends Activity {
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         
         preview.addView(mPreview);
-        
-        
-        
     }
     
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_camera, menu);
@@ -82,9 +74,4 @@ public class CameraActivity extends Activity {
 	    }
 	    return c; // returns null if camera is unavailable
 	}
-	
-	
-	
-
-    
 }

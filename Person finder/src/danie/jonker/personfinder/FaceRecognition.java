@@ -16,7 +16,11 @@ package danie.jonker.personfinder;
  * image index set against the all10.txt training image index set.  See http://en.wikipedia.org/wiki/Eigenface
  * for a technical explanation of the algorithm.
  *
- * stephenreed@yahoo.com
+ * Originally by:
+ * stephen reed
+ * 
+ * Modified by:
+ * Daniel Jonker
  *
  * FaceRecognition is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,13 +46,11 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_STORAGE_READ;
 import static com.googlecode.javacv.cpp.opencv_core.CV_STORAGE_WRITE;
 import static com.googlecode.javacv.cpp.opencv_core.CV_TERMCRIT_ITER;
 import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_32F;
-import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_32S;
 import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
 import static com.googlecode.javacv.cpp.opencv_core.cvConvertScale;
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateMat;
-import static com.googlecode.javacv.cpp.opencv_core.cvGetSize;
 import static com.googlecode.javacv.cpp.opencv_core.cvGetTickCount;
 import static com.googlecode.javacv.cpp.opencv_core.cvGetTickFrequency;
 import static com.googlecode.javacv.cpp.opencv_core.cvMinMaxLoc;
@@ -206,11 +208,6 @@ public class FaceRecognition {
 
 		final FloatPointer floatPointer = new FloatPointer(nEigens);
 		for (i = 0; i < nTrainFaces; i++) {
-			Log.i("TAG", "number of channels: " + String.valueOf(trainingFaceImgArr[i].nChannels()));
-			Log.i("TAG", "depth: " + String.valueOf(trainingFaceImgArr[i].depth()));
-			Log.i("TAG", "null?: " + String.valueOf(trainingFaceImgArr[i].isNull()));
-			Log.i("TAG", "imageSize: " + String.valueOf(trainingFaceImgArr[i].imageSize()));
-			Log.i("TAG", "nSize: " + String.valueOf(trainingFaceImgArr[i].nSize()));
 
 			cvEigenDecomposite(trainingFaceImgArr[i], // obj
 					nEigens, // nEigObjs
@@ -356,9 +353,6 @@ public class FaceRecognition {
 		// Start timing recognition
 		long startTime = System.nanoTime();
 
-		
-		//testFaceImg = grayToIpl(face);
-		//testFaceImg = byteToIpl(face);
 		testFaceImg = bmpToIpl(face);
 		saveBmp(face, "blah");
 		// convert Bitmap it IplImage
@@ -747,8 +741,7 @@ public class FaceRecognition {
 	private void storeEigenfaceImages() {
 		// Store the average image to a file
 		LOGGER.info("Saving the image of the average face as 'data/out_averageImage.bmp'");
-		cvSaveImage("data/out_averageImage.bmp", pAvgTrainImg);
-
+		cvSaveImage("/sdcard/saved_images/eigenfaces/out_averageImage.bmp", pAvgTrainImg);
 		// Create a large image made of many eigenface images.
 		// Must also convert each eigenface image to a normal 8-bit UCHAR image
 		// instead of a 32-bit float image.
@@ -1010,12 +1003,7 @@ public class FaceRecognition {
 
 		
 		
-		Log.i("TAG", "number of channels: " + String.valueOf(_1image.nChannels()));
-		Log.i("TAG", "depth: " + String.valueOf(_1image.depth()));
-		Log.i("TAG", "null?: " + String.valueOf(_1image.isNull()));
-		Log.i("TAG", "imageSize: " + String.valueOf(_1image.imageSize()));
-		Log.i("TAG", "nSize: " + String.valueOf(_1image.nSize()));
-
+	
 		argbImage.copyPixelsToBuffer(image.getByteBuffer());
 		
 		
@@ -1023,16 +1011,10 @@ public class FaceRecognition {
 		cvCvtColor(_3image, _1image, CV_RGB2GRAY);
 		
 		
-		cvSaveImage("/sdcard/saved_images/testface_1image.jpg", _1image);
+		//cvSaveImage("/sdcard/saved_images/testface_1image.jpg", _1image);
 
 		
 
-		Log.i("TAG", "number of channels: " + String.valueOf(_1image.nChannels()));
-		Log.i("TAG", "depth: " + String.valueOf(_1image.depth()));
-		Log.i("TAG", "null?: " + String.valueOf(_1image.isNull()));
-		Log.i("TAG", "imageSize: " + String.valueOf(_1image.imageSize()));
-		Log.i("TAG", "nSize: " + String.valueOf(_1image.nSize()));
-		//return _1image;
 		return _1image;
 	}
 	

@@ -53,8 +53,8 @@ public class MainMenu extends FragmentActivity implements ActionBar.TabListener 
         /**
          * Button listener class, this is temporary because fragments are taking waaaaaaaaaaaaaaaaaaaay too long
          */
-        final Button button = (Button) findViewById(R.id.btnCamera);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button cameraButton = (Button) findViewById(R.id.btnCamera);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	// Switch to camera activity
     			if (checkCameraHardware(getApplicationContext())){
@@ -120,30 +120,16 @@ public class MainMenu extends FragmentActivity implements ActionBar.TabListener 
         //Switch between different tabs, each tab has its own activity/fragment
         switch (tab.getPosition()){
         	case 0:
-        		//main menu activity
         		Log.i (TAG, "in main menu case");
-        		//toast.setText("Main menu toast");
-        		//toast.show();
         		break;
         	case 1: // camera
         		Log.i (TAG, "in camera case");
-        		CameraFragment camFragment = new CameraFragment();
-        		
-        		fm.beginTransaction().replace(R.id.container, camFragment).commit();
-        		//Intent i = new Intent(getApplicationContext(), CameraActivity.class);
-				//startActivity(i);	
-        		//toast.setText("Camera toast");
-        		//toast.show();
         		break;
         	case 2: //database
-        		
         		break;
         	case 3: //settings
-        		
         		break;
         	default:
-        		//Main menu activity
-        		
         }
         // When the given tab is selected, show the tab contents in the container
         Fragment fragment = new DummySectionFragment();
@@ -169,8 +155,6 @@ public class MainMenu extends FragmentActivity implements ActionBar.TabListener 
         }
     }
     
-    
-
     /**
      * A dummy fragment representing a section of the app, but that simply displays dummy text.
      */
